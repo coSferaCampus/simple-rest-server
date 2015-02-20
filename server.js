@@ -6,6 +6,7 @@ var db = new Datastore();
 var bodyParser = require('body-parser');
 var heredoc = require('heredoc');
 var colors = require('colors');
+var cors = require('cors');
 
 var logo = heredoc(function() {/*
 
@@ -51,6 +52,7 @@ function validateBook(book, errors) {
 }
 
 app.use( bodyParser.json() );
+app.use( cors() );
 
 app.get('/books', function (req, res) {
   db.find({}, function(err, books) {
