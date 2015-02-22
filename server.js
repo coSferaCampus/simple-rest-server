@@ -21,20 +21,23 @@ var books = [
   {
     title: "Como programar en C++",
     author: "Deitel & Deitel",
-    available: true,
-    price: 58.00
+    //available: true,
+    price: 58.00,
+    created_at: new Date()
   },
   {
     title: "Harry Potter",
     author: "J.K. Rowling",
-    available: false,
-    price: 32.00
+    //available: false,
+    price: 32.00,
+    created_at: new Date()
   },
   {
     title: "El Señor de los Anillos",
     author: "J.R.R. Tolkien",
-    available: true,
-    price: 60.00
+    //available: true,
+    price: 60.00,
+    created_at: new Date()
   }
 ];
 
@@ -45,7 +48,7 @@ _.forEach( books, function(book) {
 function validateBook(book, errors) {
   if ( _.isEmpty(book.title) ) { errors.title = ['blank']; }
   if ( _.isEmpty(book.author) ) { errors.author = ['blank']; }
-  if ( ! _.isBoolean(book.available) ) { errors.available = ['blank']; }
+  //if ( ! _.isBoolean(book.available) ) { errors.available = ['blank']; }
   if ( ! _.isNumber(book.price) ) { errors.price = ['blank']; }
 
   return _.isEmpty( errors );
@@ -54,8 +57,10 @@ function validateBook(book, errors) {
 app.use( bodyParser.json() );
 app.use( cors() );
 
+app.options('/books/:id');
+
 app.get('/books', function (req, res) {
-  db.find({}, function(err, books) {
+  db.find({}).sort({ created_at: 1 }).exec(function(err, books) {
     if ( err ) {
       res.sendStatus(500);
     } else {
@@ -107,6 +112,7 @@ app.post('/books', function(req, res) {
   var errors = {};
 
   if ( validateBook( req.body, errors ) ) {
+    req.body.created_at = new Date(),
     db.insert(req.body, function(err, book) {
       if ( err ) {
         res.sendStatus(500);
